@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { styled, alpha } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import { useTranslation } from 'react-i18next';
-import { motion } from "framer-motion"
+import cookie from "js-cookie"
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -54,14 +54,20 @@ const StyledMenu = styled((props) => (
 
 const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null);
-    const [lang, setLang] = useState("ENG");
+    const [lang, setLang] = useState();
     const open = Boolean(anchorEl);
     const isMobile = UseMobile() <= 500;
     const [siderMobile, setSiderMobile] = useState(false);
     const { i18n } = useTranslation();
 
     useEffect(() => {
-        document.body.dir = i18n.language == 'ar' ? 'rtl' : 'ltr'
+        console.log("dir: ", cookie.get('i18next'));
+        document.body.dir = cookie.get('i18next') == 'ar' ? 'rtl' : 'ltr'
+    }, [])
+
+    useEffect(() => {
+        if (i18n.language && lang){
+            document.body.dir = lang?.slice(0, 2)?.toLowerCase() == 'ar' ? 'rtl' : 'ltr'}
     }, [lang])
 
     const handleClick = (event) => {
@@ -75,47 +81,47 @@ const Header = () => {
     };
 
     return (
-            <>
-                <div style={{ width: "100%", height: "50px", position: "sticky", top: 0, zIndex: 99, borderBottom: "1px solid lightblue", backgroundColor: "white" }}>
-                    <div style={{ height: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", paddingLeft: "20px", paddingRight: "20px" }}>
-                        <h2 style={{ color: "lightblue", marginTop: "auto", marginBottom: "auto", fontSize: "20px" }}>Zenith Technology</h2>
+        <>
+            <div style={{ width: "100%", height: "50px", position: "sticky", top: 0, zIndex: 99, borderBottom: "1px solid lightblue", backgroundColor: "white" }}>
+                <div style={{ height: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", paddingLeft: "20px", paddingRight: "20px" }}>
+                    <h2 style={{ color: "lightblue", marginTop: "auto", marginBottom: "auto", fontSize: "20px" }}>Zenith Technology</h2>
 
-                        {isMobile ?
-                            <MenuIcon onClick={() => {
-                                setSiderMobile(true);
-                            }} style={{ width: "25px", height: "25px", color: "lightblue", cursor: "pointer" }} /> : null}
+                    {isMobile ?
+                        <MenuIcon onClick={() => {
+                            setSiderMobile(true);
+                        }} style={{ width: "25px", height: "25px", color: "lightblue", cursor: "pointer" }} /> : null}
 
-                        <div style={{ border: "1px solid lightblue", borderRadius: "20px", padding: "0px 10px" }}>
-                            <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={handleClick}>
-                                <h3 style={{ color: "lightblue", marginTop: "auto", marginBottom: "auto" }}>{i18n.language?.slice(0, 2)?.toUpperCase()}</h3>
-                                <KeyboardArrowDownIcon style={{ color: "lightblue", width: "30px", height: "40px" }} />
-                            </div>
-                            <StyledMenu
-                                id="demo-customized-menu"
-                                MenuListProps={{
-                                    'aria-labelledby': 'demo-customized-button',
-                                }}
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={() => { setAnchorEl(null); }}
-                            >
-                                <MenuItem style={i18n.language.toLowerCase() === "en" ? { backgroundColor: "lightblue", color: "white" } : { backgroundColor: "white" }} onClick={() => handleClose("en")}>
-                                    Eng
-                                </MenuItem>
-                                <MenuItem style={i18n.language.toLowerCase() === "ar" ? { backgroundColor: "lightblue", color: "white" } : {}} onClick={() => handleClose("ar")}>
-                                    Arb
-                                </MenuItem>
-                            </StyledMenu>
+                    <div style={{ border: "1px solid lightblue", borderRadius: "20px", padding: "0px 10px" }}>
+                        <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={handleClick}>
+                            <h3 style={{ color: "lightblue", marginTop: "auto", marginBottom: "auto" }}>{i18n.language?.slice(0, 2)?.toUpperCase()}</h3>
+                            <KeyboardArrowDownIcon style={{ color: "lightblue", width: "30px", height: "40px" }} />
                         </div>
+                        <StyledMenu
+                            id="demo-customized-menu"
+                            MenuListProps={{
+                                'aria-labelledby': 'demo-customized-button',
+                            }}
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={() => { setAnchorEl(null); }}
+                        >
+                            <MenuItem style={i18n.language.toLowerCase() === "en" ? { backgroundColor: "lightblue", color: "white" } : { backgroundColor: "white" }} onClick={() => handleClose("en")}>
+                                Eng
+                            </MenuItem>
+                            <MenuItem style={i18n.language.toLowerCase() === "ar" ? { backgroundColor: "lightblue", color: "white" } : {}} onClick={() => handleClose("ar")}>
+                                Arb
+                            </MenuItem>
+                        </StyledMenu>
                     </div>
                 </div>
+            </div>
 
-                < div style={{ height: "calc(100vh - 52px" }}>
-                    <SideNavigation />
-                    <Outlet />
-                </div >
-                {isMobile ? <SideNavigation siderMobile={siderMobile} setSiderMobile={setSiderMobile} /> : null}
-            </> 
+            < div style={{ height: "calc(100vh - 52px" }}>
+                <SideNavigation />
+                <Outlet />
+            </div >
+            {isMobile ? <SideNavigation siderMobile={siderMobile} setSiderMobile={setSiderMobile} /> : null}
+        </>
     )
 }
 
