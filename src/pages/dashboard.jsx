@@ -1,30 +1,27 @@
 import { Grid, Paper } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import UseMobile from "../customHooks/useMobile";
-import LineChartView from "../charts/lineChart";
-import BarChartView from "../charts/barChart";
+// import LineChartView from "../charts/lineChart";
+// import BarChartView from "../charts/barChart";
 import { useTranslation } from "react-i18next";
+
 import PieChartView from "../charts/pieChart";
-import ScatterChartView from "../charts/scatterChart";
+import Pie from "../charts/chartjs/pie";
+import PieChart from "../charts/recharts/pie";
+import HighChartPie from "../charts/highcharts/pie";
+
 import DaviationBarChartView from "../charts/daviationBarChart";
 import { useState } from "react";
 
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: "lightblue",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: "white",
-    height: "50px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    fontSize: "20px"
-}));
+import ScatterChartView from "../charts/scatterChart";
+import ScatterChart from "../charts/chartjs/scatter";
+import ReScatterChart from "../charts/recharts/scatterChart";
+import HighChartScatter from "../charts/highcharts/scatter";
+
+import Modal from '../modals/modal';
 
 const Dashboard = () => {
     const isMobile = UseMobile() <= 500;
-    const { t, i18n } = useTranslation();
 
     const data = [
         { x: 1, y: 5 },
@@ -65,55 +62,79 @@ const Dashboard = () => {
                 width: "100%", overflowY: "scroll"
             }}>
                 <Grid container rowSpacing={{ xs: 1, sm: 1, md: 1 }} columnSpacing={{ xs: 1, sm: 1, md: 2 }} style={{ margin: "auto", width: "100%", padding: "20px", paddingLeft: "0px", paddingTop: "8px", paddingRight: isMobile ? "8px" : "20px" }}>
-                    <Grid item xs={12} sm={6} md={6} style={{ paddingTop: "0px" }}>
-                        <Item>{t("TotalNumberOfEmployees")}: 200</Item>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={6} style={{ paddingTop: "0px", marginTop: isMobile ? "4px" : "" }}>
-                        <Item>{t("NumberOfSoftwareEngineers")}: 100</Item>
-                    </Grid>
-                </Grid>
-
-                <Grid container rowSpacing={{ xs: 1, sm: 1, md: 1 }} columnSpacing={{ xs: 1, sm: 1, md: 2 }} style={{ margin: "auto", width: "100%", padding: "20px", paddingLeft: "0px", paddingTop: "8px", paddingRight: isMobile ? "8px" : "20px" }}>
-                    <Grid item xs={12} sm={12} md={6} style={{ paddingTop: "0px", width: "100%", minHeight: "260px" }}>
-                        <button onClick={handleDataSwitch}>Switch Data</button>
-                        <LineChartView data={selectedData[Object.keys(selectedData)[0]]} />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={6} style={{ paddingTop: "0px", marginTop: isMobile ? "4px" : "", overflowX: "hidden", width: "100%", minHeight: "260px" }}>
-                        <button onClick={handleDataSwitch}>Switch Data</button>
-                        <BarChartView data={data1} />
-                    </Grid>
-                </Grid>
-
-                <Grid container rowSpacing={{ xs: 1, sm: 1, md: 1 }} columnSpacing={{ xs: 1, sm: 1, md: 2 }} style={{ margin: "auto", width: "100%", padding: "20px", paddingLeft: "0px", paddingTop: "8px", paddingRight: isMobile ? "8px" : "20px" }}>
-                    <Grid item xs={12} sm={12} md={6} style={{ paddingTop: "0px", width: "100%", minHeight: "260px" }}>
+                    <Grid item xs={12} sm={6} md={4} lg={4} style={{
+                        paddingTop: "0px", marginTop: isMobile ? "4px" : "", width: "100%", minHeight: "260px" }}>
+                        <Modal title="PieChart" library="D3 Chart">
+                            <PieChartView />
+                        </Modal>
                         <PieChartView />
                     </Grid>
-                    <Grid item xs={12} sm={12} md={6} style={{ paddingTop: "0px", marginTop: isMobile ? "4px" : "", overflowX: "hidden", width: "100%", minHeight: "260px" }}>
-                        <button onClick={() => {
-                            if (document.getElementsByClassName('scatterPlotLine')[0].style.display === 'none')
-                                document.getElementsByClassName('scatterPlotLine')[0].style.display = 'block';
-                            else
-                                document.getElementsByClassName('scatterPlotLine')[0].style.display = 'none'
-                        }}>Toggle Path</button>
+
+                    <Grid item xs={12} sm={6} md={4} lg={4} style={{
+                        paddingTop: "0px", marginTop: isMobile ? "4px" : "", width: "100%", minHeight: "260px" }}>
+                        <Modal title="PieChart" library="ChartJS">
+                            <Pie fullPageView={true} />
+                        </Modal>
+                        <Pie />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={4} lg={4} style={{
+                        paddingTop: "0px", marginTop: isMobile ? "4px" : "", width: "100%", minHeight: "260px" }}>
+                        <Modal title="PieChart" library="Re Chart">
+                            <PieChart />
+                        </Modal>
+                        <PieChart />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={4} lg={4} style={{
+                        paddingTop: "0px", marginTop: isMobile ? "4px" : "", width: "100%", minHeight: "260px" }}>
+                        <Modal title="PieChart" library="High Chart">
+                            <HighChartPie fullWithChart={true} />
+                        </Modal>
+                        <HighChartPie />
+                    </Grid>
+
+
+
+                    {/* scatter */}
+                    <Grid item xs={12} sm={6} md={4} lg={4} style={{
+                        paddingTop: "0px", marginTop: isMobile ? "4px" : "", width: "100%", minHeight: "260px" }}>
+                        <Modal title="ScatterChart" library="D3 Chart">
+                            <ScatterChartView />
+                        </Modal>
                         <ScatterChartView />
                     </Grid>
+
+                    <Grid item xs={12} sm={6} md={4} lg={4} style={{
+                        paddingTop: "0px", marginTop: isMobile ? "4px" : "", width: "100%", minHeight: "260px" }}>
+                        <Modal title="ScatterChart" library="ChartJS">
+                            <ScatterChart fullPageView={true} />
+                        </Modal>
+                        <ScatterChart />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={4} lg={4} style={{ paddingTop: "0px", marginTop: isMobile ? "4px" : "", width: "100%", minHeight: "260px" }}>
+                        <Modal title="ScatterChart" library="Re Chart">
+                            <ReScatterChart />
+                        </Modal>
+                        <ReScatterChart />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={4} lg={4} style={{ paddingTop: "0px", marginTop: isMobile ? "4px" : "", width: "100%", minHeight: "260px" }}>
+                        <Modal title="ScatterChart" library="High Chart">
+                            <HighChartScatter fullWithChart={true} />
+                        </Modal>
+                        <HighChartScatter />
+                    </Grid>
+                    {/* scatter */}
                 </Grid>
 
-                <Grid container rowSpacing={{ xs: 1, sm: 1, md: 1 }} columnSpacing={{ xs: 1, sm: 1, md: 2 }} style={{ margin: "auto", width: "100%", padding: "20px", paddingLeft: "0px", paddingTop: "8px", paddingRight: isMobile ? "8px" : "20px" }}>
-                    <Grid item xs={12} sm={12} md={6} style={{ paddingTop: "0px", width: "100%", minHeight: "260px" }}>
-                    <button>Toggle Path</button>
-                        <DaviationBarChartView />
+                {/* <Grid container rowSpacing={{ xs: 1, sm: 1, md: 1 }} columnSpacing={{ xs: 1, sm: 1, md: 2 }} style={{ margin: "auto", width: "100%", padding: "20px", paddingLeft: "0px", paddingTop: "8px", paddingRight: isMobile ? "8px" : "20px" }}>
+                    <Grid item xs={12} sm={12} md={6} style={{ paddingTop: "0px", width: "100%", minHeight: "260px" }}> */}
+                        {/* <button>Toggle Path</button> */}
+                        {/* <DaviationBarChartView />
                     </Grid>
-                    {/* <Grid item xs={12} sm={6} md={6} style={{ paddingTop: "0px", marginTop: isMobile ? "4px" : "", overflowX: "hidden", width: "100%", minHeight: "260px" }}>
-                        <button onClick={() => {
-                            if (document.getElementsByClassName('scatterPlotLine')[0].style.display === 'none')
-                                document.getElementsByClassName('scatterPlotLine')[0].style.display = 'block';
-                            else
-                                document.getElementsByClassName('scatterPlotLine')[0].style.display = 'none'
-                        }}>Toggle Path</button>
-                        <ScatterChartView />
-                    </Grid> */}
-                </Grid>
+                </Grid> */}
             </div>
             {/* </div> */}
         </>

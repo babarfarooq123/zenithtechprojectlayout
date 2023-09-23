@@ -566,7 +566,7 @@ const LineChart = ({ data }) => {
         return this.getTotalLength();
       })
       .transition()
-      .duration(2000) // Transition duration in milliseconds (same as the line animation)
+      .duration(1500) // Transition duration in milliseconds (same as the line animation)
       .ease(d3.easeLinear) // Transition easing function (linear in this case)
       .attr('stroke-dashoffset', 0);
 
@@ -618,7 +618,7 @@ const LineChart = ({ data }) => {
       })
       .style('opacity', 0)
       .transition()
-      .duration(6000)
+      .duration(2000)
       .ease(d3.easeLinear)
       .style('opacity', 1);
 

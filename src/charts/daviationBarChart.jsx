@@ -13,11 +13,11 @@ const DaviationBarChart = () => {
         ]
         const colors = ['lightblue', '#7b6888']
 
-        const width = document.getElementById("barChart").clientWidth;
-        const height = document.getElementById("barChart").clientHeight;
+        const width = document.getElementById("daviationBarChart").clientWidth;
+        const height = document.getElementById("daviationBarChart").clientHeight;
 
         const svg = d3
-            .select('#daviationBar')
+            .select('#daviationBarChart')
             .append('svg')
             .attr('width', width)
             .attr('height', height)
@@ -121,7 +121,7 @@ const DaviationBarChart = () => {
         // <svg id="daviationBar"></svg>
         <div style={{ position: 'relative', height: "260px", width: "100%", overflow: 'hidden' }}>
             <svg
-                id="daviationBar"
+                id="daviationBarChart"
                 // ref={svgRef}
                 width="100%"
                 height="100%"

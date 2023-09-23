@@ -9,7 +9,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { styled, alpha } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import { useTranslation } from 'react-i18next';
-import cookie from "js-cookie"
+import { useDispatch } from "react-redux";
+import { language } from "../redux/reducer";
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -59,16 +60,14 @@ const Header = () => {
     const isMobile = UseMobile() <= 500;
     const [siderMobile, setSiderMobile] = useState(false);
     const { i18n } = useTranslation();
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log("dir: ", cookie.get('i18next'));
-        document.body.dir = cookie.get('i18next') == 'ar' ? 'rtl' : 'ltr'
-    }, [])
-
-    useEffect(() => {
-        if (i18n.language && lang){
-            document.body.dir = lang?.slice(0, 2)?.toLowerCase() == 'ar' ? 'rtl' : 'ltr'}
-    }, [lang])
+        if (i18n.language && lang) {
+            document.body.dir = lang?.slice(0, 2)?.toLowerCase() === 'ar' ? 'rtl' : 'ltr';
+            dispatch(language({language: lang?.slice(0, 2)?.toLowerCase()}));
+        }
+    }, [lang]);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -82,7 +81,8 @@ const Header = () => {
 
     return (
         <>
-            <div style={{ width: "100%", height: "50px", position: "sticky", top: 0, zIndex: 99, borderBottom: "1px solid lightblue", backgroundColor: "white" }}>
+            {/* <div style={{ width: "100%", height: "50px", position: "sticky", top: 0, zIndex: 99, borderBottom: "1px solid lightblue", backgroundColor: "white" }}> */}
+            <div style={{ width: "99%", height: "50px", position: "sticky", top: 0, zIndex: 99, borderBottom: "1px solid lightblue", backgroundColor: "white" }}>
                 <div style={{ height: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", paddingLeft: "20px", paddingRight: "20px" }}>
                     <h2 style={{ color: "lightblue", marginTop: "auto", marginBottom: "auto", fontSize: "20px" }}>Zenith Technology</h2>
 
@@ -91,7 +91,11 @@ const Header = () => {
                             setSiderMobile(true);
                         }} style={{ width: "25px", height: "25px", color: "lightblue", cursor: "pointer" }} /> : null}
 
-                    <div style={{ border: "1px solid lightblue", borderRadius: "20px", padding: "0px 10px" }}>
+                    <div style={{
+                        // border: "1px solid lightblue", 
+                        borderRadius: "20px",
+                        // padding: "0px 10px" 
+                    }}>
                         <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={handleClick}>
                             <h3 style={{ color: "lightblue", marginTop: "auto", marginBottom: "auto" }}>{i18n.language?.slice(0, 2)?.toUpperCase()}</h3>
                             <KeyboardArrowDownIcon style={{ color: "lightblue", width: "30px", height: "40px" }} />

@@ -42,13 +42,13 @@ const BarChart = ({ data }) => {
       .append('rect')
       .attr('class', 'bar')
       .attr('x', d => xScale(d.x))
-      .attr('y', d => yScale(d.y) - 4)
+      .attr('y', d => Math.abs(yScale(d.y) - 4))
       // .attr('y', d => innerHeight)
       .attr('width', xScale.bandwidth())
       .attr('stroke-width', 8)
       .attr('stroke', "lightblue")
-      .attr('height', d => innerHeight - yScale(d.y))
-      // .attr('height', 0)
+      // .attr('height', d => innerHeight - yScale(d.y))
+      .attr('height', 0)
       .attr('fill', 'lightblue')
       .on('mouseover', (event, d) => {
         const containerRect = svgRef.current.getBoundingClientRect();
@@ -66,11 +66,11 @@ const BarChart = ({ data }) => {
         setTooltipData({ x: xScale(d.x), y: yScale(d.y), value: d.y, left: event.clientX - containerRect.left - margin.left + 50, top: event.clientY - containerRect.top - margin.top + 20 });
       })
       // .attr('height', 0)
-      // .transition()
-      // .duration(1000)
+      .transition()
+      .duration(1000)
       // .attr('y', d => yScale(d.y))
-      // .attr('height', d => Math.max(0, innerHeight - yScale(d.y) - 4))
-      // .ease(d3.easeBackIn)
+      .attr('height', d => Math.abs(Math.max(0, innerHeight - yScale(d.y) )))
+      .ease(d3.easeBackIn)
 
     g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)

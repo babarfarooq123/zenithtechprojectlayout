@@ -8,6 +8,8 @@ import HttpApi from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector'
 import i18next from 'i18next';
 import LoadingAnimate from './animation/loading';
+import { store } from './redux/store';
+import { Provider } from 'react-redux';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -33,7 +35,9 @@ i18next
 root.render(
   <React.Suspense fallback={<LoadingAnimate />}>
     <React.StrictMode>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </React.StrictMode>
   </React.Suspense>
 );

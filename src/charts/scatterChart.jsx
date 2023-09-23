@@ -1,5 +1,6 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import * as d3 from 'd3'
+import { useSelector } from 'react-redux';
 
 const Tooltip = ({ x, y, value }) => {
     return (
@@ -24,8 +25,18 @@ const Tooltip = ({ x, y, value }) => {
 
 const ScatterChart = () => {
     const svgRef = useRef(null);
+    const [resize, setResize] = useState(0);
+    const language = useSelector(state => state.zenithReducer);
 
-    React.useEffect(() => {
+    console.log("lang: ", language);
+
+    useEffect(() => {
+        window.addEventListener("resize", () => {
+            setResize(window.innerWidth)
+        })
+    }, [])
+
+    useEffect(() => {
         const ScatterPlot = async () => {
             const csvUrl =
                 'https://raw.githubusercontent.com/pcm-dpc//COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv'
@@ -40,8 +51,17 @@ const ScatterChart = () => {
                         ? 0
                         : +d.terapia_intensiva,
             }))
-            const width = document.getElementById("barChart").clientWidth;
-            const height = document.getElementById("barChart").clientHeight;
+
+            let width = 0, height = 0;
+
+            if (document.getElementById("fullChartModal")?.clientWidth) {
+                width = document.getElementById("fullChartModal").clientWidth - 32;
+                height = document.getElementById("fullChartModal").clientHeight - 32 - 16 - 24 - 20;
+            } else {
+                width = document.getElementById("scatterChart").clientWidth;
+                height = document.getElementById("scatterChart").clientHeight;
+            }
+
             // const margin = { top: 20, right: 30, bottom: 30, left: 40 };
             const margin = { top: 20, right: 30, bottom: 60, left: 70 };
             const innerWidth = width - margin.left - margin.right;
@@ -121,8 +141,7 @@ const ScatterChart = () => {
                 .on("mouseout", (event, d) => {
                     const tooltip = d3.select("#scatterDotTooltip");
                     tooltip.style('display', 'none');
-                    dotSelection
-                        .transition()
+                    dotSelection?.transition()
                         .duration(200)
                         .attr('r', d => parseFloat(rScale(d.rValue)))
                         .ease(d3.easeBackOut);
@@ -139,7 +158,17 @@ const ScatterChart = () => {
                     d3.line()
                         .x((d) => xScale(d.date))
                         .y((d) => yScale(d.yValue))
-                );
+                )
+                .attr('stroke-dasharray', function () {
+                    return this.getTotalLength() + ' ' + this.getTotalLength();
+                })
+                .attr('stroke-dashoffset', function () {
+                    return this.getTotalLength();
+                })
+                .transition()
+                .duration(2000) // Transition duration in milliseconds (same as the line animation)
+                .ease(d3.easeLinear) // Transition easing function (linear in this case)
+                .attr('stroke-dashoffset', 0);
 
             const xAxis = d3.axisBottom(xScale) // Create the x-axis
             svg
@@ -148,13 +177,14 @@ const ScatterChart = () => {
                 .call(xAxis)
                 .selectAll('text') // Select all text elements of the x-axis
                 .attr('transform', 'rotate(-45)') // Rotate the text labels by -45 degrees
-                .style('text-anchor', 'end');
+                .attr('text-anchor', language?.language?.toString() === 'ar' ? 'start' : 'end');
 
             const yAxis = d3.axisLeft(yScale) // Create the x-axis
             svg
                 .append('g')
                 .attr('transform', `translate(${margin.left}, ${margin.top})`) // Position the x-axis at the bottom
                 .call(yAxis)
+                .attr('text-anchor', language?.language?.toString() === 'ar' ? 'start' : 'end')
 
             // svg.append('g')
             // .attr('transform', `translate(${margin.left}, ${innerHeight + margin.bottom + 10})`)
@@ -202,7 +232,7 @@ const ScatterChart = () => {
                 .join(
                     enter => enter.append('g')
                         .attr('class', 'yLabelG')
-                        .attr('transform', `translate(${margin.left / 2 - 20}, ${(180) / 2})`)
+                        .attr('transform', `translate(${margin.left / 2 - 20}, ${(innerHeight) / 2})`)
                         .selectAll('text.yLabelText')
                         .data([null])
                         .join('text')
@@ -218,20 +248,25 @@ const ScatterChart = () => {
                 )
         }
         ScatterPlot()
-    }, [])
+    }, [resize, language])
     return (
-        <div style={{ position: 'relative', height: "260px", width: "100%", overflow: 'hidden' }}>
+        // <div style={{ position: 'relative', height: "260px", width: "100%", overflow: 'hidden' }}>
+        // <div style={{ position: 'relative', minHeight: "260px", height: "100%", width: "100%", overflow: 'hidden', border: "2px solid red" }}>
+        <div style={{ width: '100%', minHeight: '260px', maxHeight: "100%" }}>
             <svg
                 ref={svgRef}
+                // id='barChart'
                 width="100%"
                 height="100%"
-                className="scatterChart"
+                id="scatterChart"
                 style={{
                     overflow: 'visible',
+                    minHeight: "260px"
                 }}
             ></svg>
             <Tooltip />
         </div>
+        // </div>
     )
 }
 
